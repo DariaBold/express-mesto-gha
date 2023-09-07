@@ -9,7 +9,7 @@ module.exports.createCards = (req, res) => {
       if (err.name === 'ValidationError') {
         res.status(400).send({ message: err.message });
       } else {
-        res.status(500).send({ message: 'на сервере ошибка' });
+        res.status(500).send({ message: 'На сервере произошла ошибка' });
       }
     });
 };
@@ -28,7 +28,7 @@ module.exports.deleteCardId = (req, res) => {
         }
         res.send({ data: card });
       })
-      .catch((err) => res.status(500).send({ message: err.message }));
+      .catch(() => res.status(500).send({ message: 'На сервере произошла ошибка' }));
   } else {
     res.status(400).send({ message: 'Некорректное _id карточки.' });
   }
@@ -44,7 +44,7 @@ module.exports.likeCard = (req, res) => {
         }
         res.send({ data: card });
       })
-      .catch(() => res.status(500).send({ message: 'на сервере ошибка' }));
+      .catch(() => res.status(500).send({ message: 'На сервере произошла ошибка' }));
   } else {
     res.status(400).send({ message: 'Некорректный _id карточки.' });
   }
@@ -63,7 +63,7 @@ module.exports.dislikeCard = (req, res) => {
         }
         res.send({ data: card });
       })
-      .catch(() => res.status(500).send({ message: 'на сервере ошибка' }));
+      .catch(() => res.status(500).send({ message: 'На сервере произошла ошибка' }));
   } else {
     res.status(400).send({ message: 'Некорректный _id карточки.' });
   }

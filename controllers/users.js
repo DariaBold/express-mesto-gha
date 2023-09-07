@@ -9,14 +9,14 @@ module.exports.createUser = (req, res) => {
       if (err.name === 'ValidationError') {
         res.status(400).send({ message: err.message });
       } else {
-        res.status(500).send({ message: 'на сервере ошибка' });
+        res.status(500).send({ message: 'На сервере произошла ошибка' });
       }
     });
 };
 module.exports.getUsers = (req, res) => {
   User.find({})
     .then((user) => res.send({ data: user }))
-    .catch((err) => res.status(500).send({ message: err.message }));
+    .catch(() => res.status(500).send({ message: 'На сервере произошла ошибка' }));
 };
 module.exports.getUsersId = (req, res) => {
   if (req.params.userId && req.params.userId.length === 24) {
@@ -28,7 +28,7 @@ module.exports.getUsersId = (req, res) => {
         }
         res.send({ data: user });
       })
-      .catch((err) => res.status(500).send({ message: err.message }));
+      .catch(() => res.status(500).send({ message: 'На сервере произошла ошибка' }));
   } else {
     res.status(400).send({ message: 'Неккоректный _id.' });
   }
@@ -42,7 +42,7 @@ module.exports.patchUser = (req, res) => {
         if (err.name === 'ValidationError') {
           res.status(400).send({ message: err.message });
         } else {
-          res.status(500).send({ message: 'на сервере ошибка' });
+          res.status(500).send({ message: 'На сервере произошла ошибка' });
         }
       });
   } else {
@@ -58,7 +58,7 @@ module.exports.patchAvatar = (req, res) => {
         if (err.name === 'ValidationError') {
           res.status(400).send({ message: err.message });
         } else {
-          res.status(500).send({ message: 'на сервере ошибка' });
+          res.status(500).send({ message: 'На сервере произошла ошибка' });
         }
       });
   } else {
