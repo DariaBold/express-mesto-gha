@@ -31,9 +31,6 @@ module.exports.getUsersId = (req, res) => {
       .catch((err) => res.status(500).send({ message: err.message }));
   } else {
     res.status(400).send({ message: 'Неккоректный _id.' });
-  // } else {
-  //   res.status(404).send({ message: 'Пользователь по указанному _id не найден.' });
-  // }
   }
 };
 module.exports.patchUser = (req, res) => {

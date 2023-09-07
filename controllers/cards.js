@@ -19,35 +19,52 @@ module.exports.getCards = (req, res) => {
     .catch((err) => res.status(500).send({ message: err.message }));
 };
 module.exports.deleteCardId = (req, res) => {
-  if (req.params.cardId) {
+  if (req.params.cardId && req.params.cardId.length === 24) {
     Card.findByIdAndDelete(req.params.cardId)
-      .then((card) => res.send({ data: card }))
+      .then((card) => {
+        if (card === null) {
+          res.status(404).send({ message: 'Карточка по указанному _id не найдена.' });
+          return;
+        }
+        res.send({ data: card });
+      })
       .catch((err) => res.status(500).send({ message: err.message }));
   } else {
-    res.status(404).send({ message: 'Карточка по указанному _id не найдена.' });
+    res.status(400).send({ message: 'Некорректное _id карточки.' });
   }
 };
 
 module.exports.likeCard = (req, res) => {
   if (req.params.cardId.length) {
     Card.findByIdAndUpdate(req.params.cardId, { $addToSet: { likes: req.user._id } }, { new: true })
-      .then((card) => res.send({ data: card }))
+      .then((card) => {
+        if (card === null) {
+          res.status(404).send({ message: 'Карточка по указанному _id не найден.' });
+          return;
+        }
+        res.send({ data: card });
+      })
       .catch(() => res.status(500).send({ message: 'на сервере ошибка' }));
   } else {
-    res.status(404).send({ message: 'Карточка по указанному _id не найдена.' });
+    res.status(400).send({ message: 'Некорректный _id карточки.' });
   }
 };
-
 module.exports.dislikeCard = (req, res) => {
-  if (req.params.cardId) {
+  if (req.params.cardId && req.params.cardId.length === 24) {
     Card.findByIdAndUpdate(
       req.params.cardId,
       { $pull: { likes: req.user._id } },
       { new: true },
     )
-      .then((card) => res.send({ data: card }))
+      .then((card) => {
+        if (card === null) {
+          res.status(404).send({ message: 'Карточка по указанному _id не найден.' });
+          return;
+        }
+        res.send({ data: card });
+      })
       .catch(() => res.status(500).send({ message: 'на сервере ошибка' }));
   } else {
-    res.status(404).send({ message: 'Карточка по указанному _id не найдена.' });
+    res.status(400).send({ message: 'Некорректный _id карточки.' });
   }
 };
