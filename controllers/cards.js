@@ -29,7 +29,7 @@ module.exports.deleteCardId = (req, res) => {
 };
 
 module.exports.likeCard = (req, res) => {
-  if (req.params.cardId) {
+  if (req.params.cardId.length === 24) {
     Card.findByIdAndUpdate(req.params.cardId, { $addToSet: { likes: req.user._id } }, { new: true })
       .then((card) => res.send({ data: card }))
       .catch(() => res.status(500).send({ message: 'на сервере ошибка' }));
