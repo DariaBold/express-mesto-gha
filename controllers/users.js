@@ -36,8 +36,8 @@ module.exports.getUsersId = (req, res) => {
 module.exports.patchUser = (req, res) => {
   const { name, about } = req.body;
   if (req.user._id) {
-    User.findByIdAndUpdate(req.user._id, { name, about })
-      .then((user) => res.send({ data: user }))
+    User.findByIdAndUpdate(req.user._id, { name, about }, { new: true, runValidators: true })
+      .then((user) => res.status(201).send({ data: user }))
       .catch((err) => {
         if (err.name === 'ValidationError') {
           res.status(400).send({ message: err.message });
@@ -52,7 +52,7 @@ module.exports.patchUser = (req, res) => {
 module.exports.patchAvatar = (req, res) => {
   const { avatar } = req.body;
   if (req.user._id) {
-    User.findByIdAndUpdate(req.user._id, { avatar })
+    User.findByIdAndUpdate(req.user._id, { avatar }, { new: true, runValidators: true })
       .then((user) => res.send({ data: user }))
       .catch((err) => {
         if (err.name === 'ValidationError') {
