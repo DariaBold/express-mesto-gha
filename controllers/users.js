@@ -21,12 +21,19 @@ module.exports.getUsers = (req, res) => {
 module.exports.getUsersId = (req, res) => {
   if (req.params.userId && req.params.userId.length === 24) {
     User.findById(req.params.userId)
-      .then((user) => res.send({ data: user }))
+      .then((user) => {
+        if (user === null) {
+          res.status(404).send({ message: 'Пользователь по указанному _id не найден.' });
+          return;
+        }
+        res.send({ data: user });
+      })
       .catch((err) => res.status(500).send({ message: err.message }));
-  } else if (req.params.userId) {
-    res.status(400).send({ message: 'Неккоректный _id.' });
   } else {
-    res.status(404).send({ message: 'Пользователь по указанному _id не найден.' });
+    res.status(400).send({ message: 'Неккоректный _id.' });
+  // } else {
+  //   res.status(404).send({ message: 'Пользователь по указанному _id не найден.' });
+  // }
   }
 };
 module.exports.patchUser = (req, res) => {
