@@ -19,49 +19,50 @@ module.exports.getUsers = (req, res) => {
     .catch(() => res.status(500).send({ message: 'На сервере произошла ошибка' }));
 };
 module.exports.getUsersId = (req, res) => {
-  if (req.params.userId && req.params.userId.length === 24) {
-    User.findById(req.params.userId)
-      .then((user) => {
-        if (user === null) {
-          res.status(404).send({ message: 'Пользователь по указанному _id не найден.' });
-          return;
-        }
-        res.send({ data: user });
-      })
-      .catch(() => res.status(500).send({ message: 'На сервере произошла ошибка' }));
-  } else {
-    res.status(400).send({ message: 'Неккоректный _id.' });
-  }
+  User.findById(req.params.userId)
+    .orFail(new Error('CastError'))
+    .then((user) => res.send({ data: user }))
+    .catch((err) => {
+      if (req.params.userId.length !== 24) {
+        res.status(404).send({ message: 'Некорректный _id.' });
+      } else if (err.message === 'CastError') {
+        res.status(400).send({ message: 'Пользователь по указанному _id не найден.' });
+      } else {
+        res.status(500).send({ message: 'На сервере произошла ошибка' });
+      }
+    });
 };
 module.exports.patchUser = (req, res) => {
   const { name, about } = req.body;
-  if (req.user._id) {
-    User.findByIdAndUpdate(req.user._id, { name, about }, { new: true, runValidators: true })
-      .then((user) => res.status(200).send({ data: user }))
-      .catch((err) => {
-        if (err.name === 'ValidationError') {
-          res.status(400).send({ message: err.message });
-        } else {
-          res.status(500).send({ message: 'На сервере произошла ошибка' });
-        }
-      });
-  } else {
-    res.status(404).send({ message: 'Запрашиваемый пользователь не найден' });
-  }
+  User.findByIdAndUpdate(req.user._id, { name, about }, { new: true, runValidators: true })
+    .orFail(new Error('NotValidId'))
+    .then((user) => res.status(200).send({ data: user }))
+    .catch((err) => {
+      if (err.message === 'NotValidId') {
+        res.status(400).send({ message: 'Запрашиваемый пользователь не найден' });
+        return;
+      }
+      if (err.name === 'ValidationError') {
+        res.status(404).send({ message: err.message });
+      } else {
+        res.status(500).send({ message: 'На сервере произошла ошибка' });
+      }
+    });
 };
 module.exports.patchAvatar = (req, res) => {
   const { avatar } = req.body;
-  if (req.user._id) {
-    User.findByIdAndUpdate(req.user._id, { avatar }, { new: true, runValidators: true })
-      .then((user) => res.send({ data: user }))
-      .catch((err) => {
-        if (err.name === 'ValidationError') {
-          res.status(400).send({ message: err.message });
-        } else {
-          res.status(500).send({ message: 'На сервере произошла ошибка' });
-        }
-      });
-  } else {
-    res.status(404).send({ message: 'Запрашиваемый пользователь не найден' });
-  }
+  User.findByIdAndUpdate(req.user._id, { avatar }, { new: true, runValidators: true })
+    .orFail(new Error('NotValidId'))
+    .then((user) => res.send({ data: user }))
+    .catch((err) => {
+      if (err.message === 'NotValidId') {
+        res.status(400).send({ message: 'Запрашиваемый пользователь не найден' });
+        return;
+      }
+      if (err.name === 'ValidationError') {
+        res.status(404).send({ message: err.message });
+      } else {
+        res.status(500).send({ message: 'На сервере произошла ошибка' });
+      }
+    });
 };
