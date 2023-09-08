@@ -20,13 +20,13 @@ module.exports.getCards = (req, res) => {
 };
 module.exports.deleteCardId = (req, res) => {
   Card.findByIdAndDelete(req.params.cardId)
-    .orFail(new Error('CastError'))
+    .orFail()
     .then((card) => { res.send({ data: card }); })
     .catch((err) => {
       if (req.params.cardId.length !== 24) {
         res.status(400).send({ message: 'Некорректный _id карточки.' });
-      } else if (err.message === 'CastError') {
-        res.status(404).send({ message: 'Карточка по указанному _id не найден.' });
+      } else if (err.name === 'CastError') {
+        res.status(404).send({ message: 'Карточка по указанному _id не найдена.' });
       } else {
         res.status(500).send({ message: 'На сервере произошла ошибка' });
       }
@@ -35,13 +35,13 @@ module.exports.deleteCardId = (req, res) => {
 
 module.exports.likeCard = (req, res) => {
   Card.findByIdAndUpdate(req.params.cardId, { $addToSet: { likes: req.user._id } }, { new: true })
-    .orFail(new Error('CastError'))
+    .orFail()
     .then((card) => res.send({ data: card }))
     .catch((err) => {
       if (req.params.cardId.length !== 24) {
         res.status(400).send({ message: 'Некорректный _id карточки.' });
-      } else if (err.message === 'CastError') {
-        res.status(404).send({ message: 'Карточка по указанному _id не найден.' });
+      } else if (err.name === 'CastError') {
+        res.status(404).send({ message: 'Карточка по указанному _id не найдена.' });
       } else {
         res.status(500).send({ message: 'На сервере произошла ошибка' });
       }
@@ -53,13 +53,13 @@ module.exports.dislikeCard = (req, res) => {
     { $pull: { likes: req.user._id } },
     { new: true },
   )
-    .orFail(new Error('CastError'))
+    .orFail()
     .then((card) => res.send({ data: card }))
     .catch((err) => {
       if (req.params.cardId.length !== 24) {
         res.status(400).send({ message: 'Некорректный _id карточки.' });
-      } else if (err.message === 'CastError') {
-        res.status(404).send({ message: 'Карточка по указанному _id не найден.' });
+      } else if (err.name === 'CastError') {
+        res.status(404).send({ message: 'Карточка по указанному _id не найдена.' });
       } else {
         res.status(500).send({ message: 'На сервере произошла ошибка' });
       }
