@@ -23,8 +23,10 @@ module.exports.deleteCardId = (req, res) => {
     .orFail(new Error('CastError'))
     .then((card) => { res.send({ data: card }); })
     .catch((err) => {
-      if (err.name === 'CastError') {
-        res.status(404).send({ message: 'Некорректное _id карточки.' });
+      if (req.params.cardId.length !== 24) {
+        res.status(400).send({ message: 'Некорректный _id карточки.' });
+      } else if (err.message === 'CastError') {
+        res.status(404).send({ message: 'Карточка по указанному _id не найден.' });
       } else {
         res.status(500).send({ message: 'На сервере произошла ошибка' });
       }
