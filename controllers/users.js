@@ -38,7 +38,7 @@ module.exports.patchUser = (req, res) => {
     .orFail()
     .then((user) => res.status(200).send({ data: user }))
     .catch((err) => {
-      if (err.name === 'CastError') {
+      if (err.name === 'DocumentNotFoundError') {
         res.status(404).send({ message: 'Запрашиваемый пользователь не найден' });
         return;
       }
@@ -55,7 +55,7 @@ module.exports.patchAvatar = (req, res) => {
     .orFail()
     .then((user) => res.send({ data: user }))
     .catch((err) => {
-      if (err.name === 'CastError') {
+      if (err.name === 'DocumentNotFoundError') {
         res.status(404).send({ message: 'Запрашиваемый пользователь не найден' });
         return;
       }
