@@ -23,9 +23,9 @@ module.exports.getUsersId = (req, res) => {
     .orFail()
     .then((user) => res.send({ data: user }))
     .catch((err) => {
-      if (req.params.userId.length !== 24) {
+      if (err.name === 'CastError') {
         res.status(400).send({ message: 'Некорректный _id.' });
-      } else if (err.name === 'CastError') {
+      } else if (err.name === 'DocumentNotFoundError') {
         res.status(404).send({ message: 'Пользователь по указанному _id не найден.' });
       } else {
         res.status(500).send({ message: 'На сервере произошла ошибка' });
