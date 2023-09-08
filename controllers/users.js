@@ -20,12 +20,12 @@ module.exports.getUsers = (req, res) => {
 };
 module.exports.getUsersId = (req, res) => {
   User.findById(req.params.userId)
-    .orFail(new Error('NotValidId'))
+    .orFail()
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (req.params.userId.length !== 24) {
         res.status(400).send({ message: 'Некорректный _id.' });
-      } else if (err.message === 'NotValidId') {
+      } else if (err.name === 'CastError') {
         res.status(404).send({ message: 'Пользователь по указанному _id не найден.' });
       } else {
         res.status(500).send({ message: 'На сервере произошла ошибка' });
@@ -35,10 +35,10 @@ module.exports.getUsersId = (req, res) => {
 module.exports.patchUser = (req, res) => {
   const { name, about } = req.body;
   User.findByIdAndUpdate(req.user._id, { name, about }, { new: true, runValidators: true })
-    .orFail(new Error('NotValidId'))
+    .orFail()
     .then((user) => res.status(200).send({ data: user }))
     .catch((err) => {
-      if (err.message === 'NotValidId') {
+      if (err.name === 'CastError') {
         res.status(404).send({ message: 'Запрашиваемый пользователь не найден' });
         return;
       }
@@ -52,10 +52,10 @@ module.exports.patchUser = (req, res) => {
 module.exports.patchAvatar = (req, res) => {
   const { avatar } = req.body;
   User.findByIdAndUpdate(req.user._id, { avatar }, { new: true, runValidators: true })
-    .orFail(new Error('NotValidId'))
+    .orFail()
     .then((user) => res.send({ data: user }))
     .catch((err) => {
-      if (err.message === 'NotValidId') {
+      if (err.name === 'CastError') {
         res.status(404).send({ message: 'Запрашиваемый пользователь не найден' });
         return;
       }
