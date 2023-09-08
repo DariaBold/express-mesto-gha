@@ -24,9 +24,9 @@ module.exports.getUsersId = (req, res) => {
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (req.params.userId.length !== 24) {
-        res.status(404).send({ message: 'Некорректный _id.' });
+        res.status(400).send({ message: 'Некорректный _id.' });
       } else if (err.message === 'CastError') {
-        res.status(400).send({ message: 'Пользователь по указанному _id не найден.' });
+        res.status(404).send({ message: 'Пользователь по указанному _id не найден.' });
       } else {
         res.status(500).send({ message: 'На сервере произошла ошибка' });
       }
@@ -39,11 +39,11 @@ module.exports.patchUser = (req, res) => {
     .then((user) => res.status(200).send({ data: user }))
     .catch((err) => {
       if (err.message === 'NotValidId') {
-        res.status(400).send({ message: 'Запрашиваемый пользователь не найден' });
+        res.status(404).send({ message: 'Запрашиваемый пользователь не найден' });
         return;
       }
       if (err.name === 'ValidationError') {
-        res.status(404).send({ message: err.message });
+        res.status(400).send({ message: err.message });
       } else {
         res.status(500).send({ message: 'На сервере произошла ошибка' });
       }
@@ -56,11 +56,11 @@ module.exports.patchAvatar = (req, res) => {
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.message === 'NotValidId') {
-        res.status(400).send({ message: 'Запрашиваемый пользователь не найден' });
+        res.status(404).send({ message: 'Запрашиваемый пользователь не найден' });
         return;
       }
       if (err.name === 'ValidationError') {
-        res.status(404).send({ message: err.message });
+        res.status(400).send({ message: err.message });
       } else {
         res.status(500).send({ message: 'На сервере произошла ошибка' });
       }
