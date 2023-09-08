@@ -36,7 +36,7 @@ module.exports.likeCard = (req, res) => {
     .orFail(new Error('CastError'))
     .then((card) => res.send({ data: card }))
     .catch((err) => {
-      if (req.params.userId.length !== 24) {
+      if (req.params.cardId.length !== 24) {
         res.status(400).send({ message: 'Некорректный _id карточки.' });
       } else if (err.message === 'CastError') {
         res.status(404).send({ message: 'Карточка по указанному _id не найден.' });
@@ -54,7 +54,7 @@ module.exports.dislikeCard = (req, res) => {
     .orFail(new Error('CastError'))
     .then((card) => res.send({ data: card }))
     .catch((err) => {
-      if (req.params.userId.length !== 24) {
+      if (req.params.cardId.length !== 24) {
         res.status(400).send({ message: 'Некорректный _id карточки.' });
       } else if (err.message === 'CastError') {
         res.status(404).send({ message: 'Карточка по указанному _id не найден.' });
