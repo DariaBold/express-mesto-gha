@@ -31,7 +31,7 @@ module.exports.deleteCardId = (req, res, next) => {
         .orFail()
         .then(() => { res.send({ message: 'Это карточка удалена.' }); })
         .catch((err) => {
-          if (req.params.cardId.length !== 24) {
+          if (err.name === 'ValidationError') {
             next(new BadRequestError('Некорректный _id карточки.'));
           } else if (err.name === 'DocumentNotFoundError') {
             next(new NotFoundError('Карточка по указанному _id не найдена.'));
@@ -54,7 +54,7 @@ module.exports.likeCard = (req, res, next) => {
     .orFail()
     .then((card) => res.send({ data: card }))
     .catch((err) => {
-      if (req.params.cardId.length !== 24) {
+      if (err.name === 'ValidationError') {
         next(new BadRequestError('Некорректный _id карточки.'));
       } else if (err.name === 'DocumentNotFoundError') {
         next(new NotFoundError('Карточка по указанному _id не найден.'));
@@ -72,7 +72,7 @@ module.exports.dislikeCard = (req, res, next) => {
     .orFail()
     .then((card) => res.send({ data: card }))
     .catch((err) => {
-      if (req.params.cardId.length !== 24) {
+      if (err.name === 'ValidationError') {
         next(new BadRequestError('Некорректный _id карточки.'));
       } else if (err.name === 'DocumentNotFoundError') {
         next(new NotFoundError('Карточка по указанному _id не найдена.'));
