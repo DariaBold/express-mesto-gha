@@ -3,9 +3,10 @@ const mongoose = require('mongoose');
 
 const bodyParser = require('body-parser');
 
+const { celebrate, Joi } = require('celebrate');
+
 const { login, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
-const { celebrate, Joi } = require('celebrate');
 
 const { PORT = 3000 } = process.env;
 
