@@ -19,13 +19,26 @@ module.exports.getCards = (req, res) => {
     .catch((err) => res.status(500).send({ message: err.message }));
 };
 module.exports.deleteCardId = (req, res) => {
-  Card.findByIdAndDelete(req.params.cardId)
-    .orFail()
-    .then((card) => { res.send({ data: card }); })
+  Card.findById(req.params.cardId)
+    .then((card) => {
+      if (!card.owner.equals(req.user._id)) {
+        res.status(400).send({ message: 'Это карточка другого участника.' });
+      }
+      Card.delete(card)
+        .orFail()
+        .then(() => { res.send({ message: 'Это карточка удалена.' }); })
+        .catch((err) => {
+          if (req.params.cardId.length !== 24) {
+            res.status(400).send({ message: 'Некорректный _id карточки.' });
+          } else if (err.name === 'DocumentNotFoundError') {
+            res.status(404).send({ message: 'Карточка по указанному _id не найден.' });
+          } else {
+            res.status(500).send({ message: 'На сервере произошла ошибка' });
+          }
+        });
+    })
     .catch((err) => {
-      if (req.params.cardId.length !== 24) {
-        res.status(400).send({ message: 'Некорректный _id карточки.' });
-      } else if (err.name === 'DocumentNotFoundError') {
+      if (err.name === 'DocumentNotFoundError') {
         res.status(404).send({ message: 'Карточка по указанному _id не найден.' });
       } else {
         res.status(500).send({ message: 'На сервере произошла ошибка' });
