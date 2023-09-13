@@ -1,4 +1,5 @@
 const BadRequestError = require('../errors/BadRequestError');
+const ForbiddenError = require('../errors/ForbiddenError');
 const NotFoundError = require('../errors/NotFoundError');
 const Card = require('../models/card');
 
@@ -24,9 +25,9 @@ module.exports.deleteCardId = (req, res, next) => {
   Card.findById(req.params.cardId)
     .then((card) => {
       if (!card.owner.equals(req.user._id)) {
-        next(new BadRequestError('Это карточка другого участника.'));
+        next(new ForbiddenError('Это карточка другого участника.'));
       }
-      Card.delete(card)
+      Card.deleteOne(card)
         .orFail()
         .then(() => { res.send({ message: 'Это карточка удалена.' }); })
         .catch((err) => {

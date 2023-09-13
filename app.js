@@ -9,6 +9,7 @@ const {
 
 const { login, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
+const NotFoundError = require('./errors/NotFoundError');
 
 const { PORT = 3000 } = process.env;
 
@@ -39,9 +40,9 @@ app.post('/signup', celebrate({
 app.use('/', auth, require('./routes/cards'));
 app.use('/', auth, require('./routes/users'));
 
-// app.use('*', (req, res) => {
-//   res.status(404).send({ message: 'страница не найдена' });
-// });
+app.use('*', (req, res, next) => {
+  next(new NotFoundError('страница не найдена'));
+});
 app.use(errors());
 app.use((err, req, res, next) => {
   const { code = 500, message } = err;
