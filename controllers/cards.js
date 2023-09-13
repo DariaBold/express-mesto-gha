@@ -41,7 +41,7 @@ module.exports.deleteCardId = (req, res, next) => {
         });
     })
     .catch((err) => {
-      if (err.name === 'DocumentNotFoundError') {
+      if (err.name === 'TypeError') {
         next(new NotFoundError('Карточка по указанному _id не найдена.'));
       } else {
         next(err);

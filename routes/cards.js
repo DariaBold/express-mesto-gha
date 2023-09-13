@@ -10,8 +10,8 @@ const {
 router.get('/cards', getCards);
 router.post('/cards', celebrate({
   [Segments.BODY]: Joi.object().keys({
-    name: Joi.string().min(2).max(30),
-    link: Joi.string().pattern(patternUrl),
+    name: Joi.string().min(2).max(30).required(),
+    link: Joi.string().pattern(patternUrl).required(),
   }),
 }), createCards);
 router.delete('/cards/:cardId', celebrate({
