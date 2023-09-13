@@ -1,4 +1,5 @@
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
 module.exports.createUser = (req, res) => {
@@ -18,7 +19,7 @@ module.exports.createUser = (req, res) => {
     }))
     .catch((err) => {
       if (err.code === 11000) {
-        res.status(401).send({ message: 'Email уже зарегистрирован' });
+        res.status(409).send({ message: 'Email уже зарегистрирован' });
       } else if (err.name === 'ValidationError') {
         res.status(400).send({ message: err.message });
       } else {
@@ -78,4 +79,23 @@ module.exports.patchAvatar = (req, res) => {
         res.status(500).send({ message: 'На сервере произошла ошибка' });
       }
     });
+};
+module.exports.login = (req, res) => {
+  const {
+    email, password,
+  } = req.body;
+  return User.findUserByCredentials(email, password)
+    .then((user) => {
+      res.send({
+        token: jwt.sign({ _id: user._id }, 'super-strong-secret', { expiresIn: '7d' }),
+      });
+    })
+    .catch((err) => {
+      res.status(401).send({ message: err.message });
+    });
+};
+module.exports.getUserNow = (req, res) => {
+  User.findById(req.user._id)
+    .then((user) => res.send({ data: user }))
+    .catch(() => res.status(500).send({ message: 'На сервере произошла ошибка' }));
 };
