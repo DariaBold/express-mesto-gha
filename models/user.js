@@ -8,13 +8,9 @@ const userSchema = new mongoose.Schema({
   name: {
     type: String,
     default: 'Жак-Ив Кусто',
-    minlength: [2, 'длина поля должна быть больше 2'],
-    maxlength: [30, 'длина поля должна быть не больше 30'],
   },
   about: {
     type: String,
-    minlength: [2, 'длина поля должна быть больше 2'],
-    maxlength: [30, 'длина поля должна быть не больше 30'],
     default: 'Исследователь',
   },
   avatar: {
