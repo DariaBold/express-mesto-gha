@@ -6,6 +6,8 @@ const ConflictError = require('../errors/ConflictError');
 const UnauthorizedError = require('../errors/UnauthorizedError');
 const NotFoundError = require('../errors/NotFoundError');
 
+const { SECRET_KEY = 'some-secret-key' } = process.env;
+
 module.exports.createUser = (req, res, next) => {
   const {
     name, about, avatar, email, password,
@@ -91,7 +93,7 @@ module.exports.login = (req, res, next) => {
   return User.findUserByCredentials(email, password)
     .then((user) => {
       res.send({
-        token: jwt.sign({ _id: user._id }, 'some-secret-key', { expiresIn: '7d' }),
+        token: jwt.sign({ _id: user._id }, SECRET_KEY, { expiresIn: '7d' }),
       });
     })
     .catch((err) => {
